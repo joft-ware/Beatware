@@ -2,6 +2,8 @@ package com.company;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 public class Beatware extends JFrame {
 
@@ -9,8 +11,11 @@ public class Beatware extends JFrame {
     private Graphics screenGraphic;
     private Image introBackground = new ImageIcon(Main.class.getResource("../../images/introBackground.jpg")).getImage();
     private JLabel menuBar= new JLabel(new ImageIcon(Main.class.getResource("../../images/menu.png")));
-    private JButton exitButton = new JButton(new ImageIcon(Main.class.getResource("../../images/exitButtonBasic.png")));
     private int mouseX, mouseY;
+    //image icon 초기화
+    private ImageIcon exitButtonEnteredImage = new ImageIcon(Main.class.getResource("../../images/exitButtonEntered.png"));
+    private ImageIcon exitButtonBasicImage = new ImageIcon(Main.class.getResource("../../images/exitButtonBasic.png"));
+    private JButton exitButton = new JButton(exitButtonBasicImage);
 
     public Beatware(){
         setUndecorated(true);
@@ -23,14 +28,51 @@ public class Beatware extends JFrame {
         setBackground(new Color(0,0,0,0));
         setLayout(null);
 
-        menuBar.setBounds(0,0,1280,30);
-        add(menuBar);
-
-        exitButton.setBounds(50,50,30,30);
+        // exit 버튼
+        exitButton.setBounds(1245,0,30,30);
         exitButton.setBorderPainted(false);
         exitButton.setContentAreaFilled(false);
         exitButton.setFocusPainted(false);
+        exitButton.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseEntered(MouseEvent e){
+                exitButton.setIcon(exitButtonEnteredImage);
+                exitButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
+                Music buttonEnteredMusic = new Music("buttonEnteredMusic.mp3", false);
+                buttonEnteredMusic.start();
+            }
+            @Override
+            public void mouseExited(MouseEvent e) {
+                exitButton.setIcon(exitButtonBasicImage);
+                exitButton.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+            }
+            @Override
+            public void mousePressed(MouseEvent e) {
+                System.exit(0);
+            }
+        });
         add(exitButton);
+
+
+        menuBar.setBounds(0,0,1280,30);
+        // menu 드래그
+        menuBar.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mousePressed(MouseEvent e){
+                mouseX = e.getX();
+                mouseY = e.getY();
+            }
+        });
+        menuBar.addMouseMotionListener(new MouseAdapter() {
+            @Override
+            public void mouseDragged(MouseEvent e){
+                int x = e.getXOnScreen();
+                int y = e.getYOnScreen();
+                setLocation(x-mouseX, y-mouseY);
+            }
+        });
+
+        add(menuBar);
 
         Music introMusic = new Music("introMusic.mp3", true);
         introMusic.start();
