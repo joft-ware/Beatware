@@ -15,7 +15,14 @@ public class Beatware extends JFrame {
     //image icon 초기화
     private ImageIcon exitButtonEnteredImage = new ImageIcon(Main.class.getResource("../../images/exitButtonEntered.png"));
     private ImageIcon exitButtonBasicImage = new ImageIcon(Main.class.getResource("../../images/exitButtonBasic.png"));
+    private ImageIcon startButtonBasicImage = new ImageIcon(Main.class.getResource("../../images/startButtonBasic.png"));
+    private ImageIcon startButtonEnteredImage = new ImageIcon(Main.class.getResource("../../images/startButtonBasic.png"));
+    private ImageIcon quitButtonBasicImage = new ImageIcon(Main.class.getResource("../../images/startButtonBasic.png"));
+    private ImageIcon quitButtonEnteredImage = new ImageIcon(Main.class.getResource("../../images/startButtonBasic.png"));
+
     private JButton exitButton = new JButton(exitButtonBasicImage);
+    private JButton startButton = new JButton(startButtonBasicImage);
+    private JButton quitButton = new JButton(quitButtonBasicImage);
 
     public Beatware(){
         setUndecorated(true);
@@ -52,6 +59,64 @@ public class Beatware extends JFrame {
             }
         });
         add(exitButton);
+
+        // start 버튼
+        startButton.setBounds(40,200,400,100);
+        startButton.setBorderPainted(false);
+        startButton.setContentAreaFilled(false);
+        startButton.setFocusPainted(false);
+        startButton.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseEntered(MouseEvent e){
+                startButton.setIcon(startButtonEnteredImage);
+                startButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
+                Music buttonEnteredMusic = new Music("buttonEnteredMusic.mp3", false);
+                buttonEnteredMusic.start();
+            }
+            @Override
+            public void mouseExited(MouseEvent e) {
+                startButton.setIcon(startButtonBasicImage);
+                startButton.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+            }
+            @Override
+            public void mousePressed(MouseEvent e) {
+                // 게임 시작 이벤트!
+            }
+        });
+        add(startButton);
+
+        // quit 버튼
+        quitButton.setBounds(40,330,400,100);
+        quitButton.setBorderPainted(false);
+        quitButton.setContentAreaFilled(false);
+        quitButton.setFocusPainted(false);
+        quitButton.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseEntered(MouseEvent e){
+                quitButton.setIcon(quitButtonEnteredImage);
+                quitButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
+                Music buttonEnteredMusic = new Music("buttonEnteredMusic.mp3", false);
+                buttonEnteredMusic.start();
+            }
+            @Override
+            public void mouseExited(MouseEvent e) {
+                quitButton.setIcon(quitButtonBasicImage);
+                quitButton.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+            }
+            @Override
+            public void mousePressed(MouseEvent e) {
+                System.exit(0);
+            }
+        });
+        add(quitButton);
+
+
+
+
+
+
+
+
 
 
         menuBar.setBounds(0,0,1280,30);
