@@ -4,15 +4,17 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.ArrayList;
+
 
 public class Beatware extends JFrame {
 
     private Image screenImage;
     private Graphics screenGraphic;
-    private JLabel menuBar= new JLabel(new ImageIcon(Main.class.getResource("../../images/menu.png")));
+    private final JLabel menuBar= new JLabel(new ImageIcon(Main.class.getResource("../../images/menu.png")));
     private int mouseX, mouseY;
     //image icon 초기화
-    private ImageIcon exitButtonEnteredImage = new ImageIcon(Main.class.getResource("../../images/exitButtonEntered.png"));
+    private final ImageIcon exitButtonEnteredImage = new ImageIcon(Main.class.getResource("../../images/exitButtonEntered.png"));
     private ImageIcon exitButtonBasicImage = new ImageIcon(Main.class.getResource("../../images/exitButtonBasic.png"));
     private ImageIcon startButtonBasicImage = new ImageIcon(Main.class.getResource("../../images/startButtonBasic2.png"));
     private ImageIcon startButtonEnteredImage = new ImageIcon(Main.class.getResource("../../images/startButtonEntered2.png"));
@@ -23,18 +25,35 @@ public class Beatware extends JFrame {
     private ImageIcon rightButtonBasicImage = new ImageIcon(Main.class.getResource("../../images/rightButtonBasic2.png"));
     private ImageIcon rightButtonEnteredImage = new ImageIcon(Main.class.getResource("../../images/rightButtonEntered2.png"));
 
-    private Image titleImage = new ImageIcon(Main.class.getResource("../../images/Imagine Dragons - Natural title.png")).getImage();
+    private ImageIcon easyButtonBasicImage = new ImageIcon(Main.class.getResource("../../images/easyButtonBasic2.png"));
+    private ImageIcon easyButtonEnteredImage = new ImageIcon(Main.class.getResource("../../images/easyButtonEntered2.png"));
+    private ImageIcon hardButtonBasicImage = new ImageIcon(Main.class.getResource("../../images/hardButtonBasic2.png"));
+    private ImageIcon hardButtonEnteredImage = new ImageIcon(Main.class.getResource("../../images/hardButtonEntered2.png"));
+    private ImageIcon backButtonBasicImage = new ImageIcon(Main.class.getResource("../../images/backButtonBasic2.png"));
+    private ImageIcon backButtonEnteredImage = new ImageIcon(Main.class.getResource("../../images/backButtonEntered2.png"));
+
     private Image background = new ImageIcon(Main.class.getResource("../../images/introBackground.jpg")).getImage();
-    private Image selectedImage = new ImageIcon(Main.class.getResource("../../images/Imagine Dragons - Natural 600x450.jpg")).getImage();
 
     private JButton exitButton = new JButton(exitButtonBasicImage);
     private JButton startButton = new JButton(startButtonBasicImage);
     private JButton quitButton = new JButton(quitButtonBasicImage);
     private JButton leftButton = new JButton(leftButtonBasicImage);
     private JButton rightButton = new JButton(rightButtonBasicImage);
+    private JButton easyButton = new JButton(easyButtonBasicImage);
+    private JButton hardButton = new JButton(hardButtonBasicImage);
+    private JButton backButton = new JButton(backButtonBasicImage);
+
+    Music buttonEnteredMusic = new Music("buttonEnteredMusic2.mp3", false);
 
     private boolean isMainScreen = false;
 
+    ArrayList<Track> trackList = new ArrayList<Track>();
+
+    private Image titleImage;
+    private Image selectedImage;
+    private Music selectedMusic;
+    private Music introMusic = new Music("introMusic2.mp3", true);
+    private int nowSelected = 0;
 
 
     public Beatware(){
@@ -47,6 +66,15 @@ public class Beatware extends JFrame {
         setVisible(true);
         setBackground(new Color(0,0,0,0));
         setLayout(null);
+
+        introMusic.start();
+
+        trackList.add(new Track("Ed Sheeran - Shape Of You title.png","Ed Sheeran - Shape Of You 600x450.jpg", "Ed Sheeran - Shape Of You 1280x720.jpg",
+                "Ed Sheeran - Shape Of You sample.mp3", "Ed Sheeran - Shape Of You.mp3"));
+        trackList.add(new Track("Imagine Dragons - Believer title.png","Imagine Dragons - Believer 600x450.jpg", "Imagine Dragons - Believer 1280x720.jpg",
+                "Imagine Dragons - Believer sample.mp3", "Imagine Dragons - Believer .mp3"));
+        trackList.add(new Track("Imagine Dragons - Natural title.png","Imagine Dragons - Natural 600x450.jpg", "Imagine Dragons - Natural 1280x720.jpg",
+                "Imagine Dragons - Natural sample.mp3", "Imagine Dragons - Natural.mp3"));
 
         // exit 버튼
         exitButton.setBounds(1245,0,30,30);
@@ -83,7 +111,6 @@ public class Beatware extends JFrame {
             public void mouseEntered(MouseEvent e){
                 startButton.setIcon(startButtonEnteredImage);
                 startButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
-                Music buttonEnteredMusic = new Music("buttonEnteredMusic2.mp3", false);
                 buttonEnteredMusic.start();
             }
             @Override
@@ -93,12 +120,10 @@ public class Beatware extends JFrame {
             }
             @Override
             public void mousePressed(MouseEvent e) {
-                startButton.setVisible(false);
-                quitButton.setVisible(false);
-                leftButton.setVisible(true);
-                rightButton.setVisible(true);
-                isMainScreen = true;
-                background = new ImageIcon(Main.class.getResource("../../images/mainBackground2.jpg")).getImage();
+                introMusic.close();
+                Music buttonEnteredMusic = new Music("buttonEnteredMusic2.mp3", false);
+                buttonEnteredMusic.start();
+                enterMain();
             }
         });
         add(startButton);
@@ -149,7 +174,7 @@ public class Beatware extends JFrame {
             }
             @Override
             public void mousePressed(MouseEvent e) {
-                //
+                selectLeft();
             }
         });
         add(leftButton);
@@ -176,10 +201,95 @@ public class Beatware extends JFrame {
             }
             @Override
             public void mousePressed(MouseEvent e) {
-                //
+                selectRight();
             }
         });
         add(rightButton);
+
+
+        // easy 버튼
+        easyButton.setVisible(false);
+        easyButton.setBounds(375,580,250,67);
+        easyButton.setBorderPainted(false);
+        easyButton.setContentAreaFilled(false);
+        easyButton.setFocusPainted(false);
+        easyButton.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseEntered(MouseEvent e){
+                easyButton.setIcon(easyButtonEnteredImage);
+                easyButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
+                Music buttonEnteredMusic = new Music("buttonEnteredMusic2.mp3", false);
+                buttonEnteredMusic.start();
+            }
+            @Override
+            public void mouseExited(MouseEvent e) {
+                easyButton.setIcon(easyButtonBasicImage);
+                easyButton.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+            }
+            @Override
+            public void mousePressed(MouseEvent e) {
+
+                gameStart(nowSelected,false);
+
+            }
+        });
+        add(easyButton);
+
+        // hard 버튼
+        hardButton.setVisible(false);
+        hardButton.setBounds(655,580,250,67);
+        hardButton.setBorderPainted(false);
+        hardButton.setContentAreaFilled(false);
+        hardButton.setFocusPainted(false);
+        hardButton.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseEntered(MouseEvent e){
+                hardButton.setIcon(hardButtonEnteredImage);
+                hardButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
+                Music buttonEnteredMusic = new Music("buttonEnteredMusic2.mp3", false);
+                buttonEnteredMusic.start();
+            }
+            @Override
+            public void mouseExited(MouseEvent e) {
+                hardButton.setIcon(hardButtonBasicImage);
+                hardButton.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+            }
+            @Override
+            public void mousePressed(MouseEvent e) {
+                gameStart(nowSelected,true);
+
+            }
+        });
+        add(hardButton);
+
+
+        // back 버튼
+        backButton.setVisible(false);
+        backButton.setBounds(20,50,60,60);
+        backButton.setBorderPainted(false);
+        backButton.setContentAreaFilled(false);
+        backButton.setFocusPainted(false);
+        backButton.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseEntered(MouseEvent e){
+                backButton.setIcon(backButtonEnteredImage);
+                backButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
+                Music buttonEnteredMusic = new Music("buttonEnteredMusic2.mp3", false);
+                buttonEnteredMusic.start();
+            }
+            @Override
+            public void mouseExited(MouseEvent e) {
+                backButton.setIcon(backButtonBasicImage);
+                backButton.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+            }
+            @Override
+            public void mousePressed(MouseEvent e) {
+                //to main
+                backMain();
+
+            }
+        });
+        add(backButton);
 
 
 
@@ -202,9 +312,6 @@ public class Beatware extends JFrame {
         });
 
         add(menuBar);
-
-        Music introMusic = new Music("introMusic2.mp3", true);
-        introMusic.start();
     }
     public void paint(Graphics g) {
         screenImage = createImage(Main.SCREEN_WIDTH, Main.SCREEN_HEIGHT);
@@ -225,4 +332,68 @@ public class Beatware extends JFrame {
         this.repaint();
     }
 
+    public void selectTrack(int nowSelected) {
+        if(selectedMusic !=null)
+            selectedMusic.close();
+        titleImage = new ImageIcon(Main.class.getResource("../../images/"+trackList.get(nowSelected).getTitleImage())).getImage();
+        selectedImage = new ImageIcon(Main.class.getResource("../../images/"+trackList.get(nowSelected).getStartImage())).getImage();
+        selectedMusic = new Music(trackList.get(nowSelected).getStartMusic(), true);
+        selectedMusic.start();
+    }
+
+    public void selectLeft(){
+        if(nowSelected ==0) {
+            nowSelected = trackList.size() - 1;
+        }
+        else {
+            nowSelected--;
+        }
+
+        selectTrack(nowSelected);
+    }
+    public void selectRight() {
+        if (nowSelected == trackList.size() - 1)
+            nowSelected = 0;
+        else
+            nowSelected++;
+
+        selectTrack(nowSelected);
+    }
+
+    public void gameStart(int nowSelected, boolean ishard)
+    {
+        if(selectedMusic!=null)
+            selectedMusic.close();
+        isMainScreen = false;
+        leftButton.setVisible(false);
+        rightButton.setVisible(false);
+        easyButton.setVisible(false);
+        hardButton.setVisible(false);
+        backButton.setVisible(true);
+        background = new ImageIcon(Main.class.getResource("../../images/"+trackList.get(nowSelected).getGameImage())).getImage();
+
+    }
+
+    public void backMain() {
+        isMainScreen = true;
+        leftButton.setVisible(true);
+        rightButton.setVisible(true);
+        easyButton.setVisible(true);
+        hardButton.setVisible(true);
+        backButton.setVisible(false);
+        background = new ImageIcon(Main.class.getResource("../../images/mainBackground2.jpg")).getImage();
+        selectTrack(nowSelected);
+    }
+    public void enterMain(){
+        startButton.setVisible(false);
+        quitButton.setVisible(false);
+        background = new ImageIcon(Main.class.getResource("../../images/mainBackground2.jpg")).getImage();
+        leftButton.setVisible(true);
+        rightButton.setVisible(true);
+        easyButton.setVisible(true);
+        hardButton.setVisible(true);
+        isMainScreen = true;
+        introMusic.close();
+        selectTrack(0);
+    }
 }
