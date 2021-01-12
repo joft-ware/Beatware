@@ -15,10 +15,10 @@ public class Beatware extends JFrame {
     //image icon 초기화
     private ImageIcon exitButtonEnteredImage = new ImageIcon(Main.class.getResource("../../images/exitButtonEntered.png"));
     private ImageIcon exitButtonBasicImage = new ImageIcon(Main.class.getResource("../../images/exitButtonBasic.png"));
-    private ImageIcon startButtonBasicImage = new ImageIcon(Main.class.getResource("../../images/startButtonBasic.png"));
-    private ImageIcon startButtonEnteredImage = new ImageIcon(Main.class.getResource("../../images/startButtonBasic.png"));
-    private ImageIcon quitButtonBasicImage = new ImageIcon(Main.class.getResource("../../images/startButtonBasic.png"));
-    private ImageIcon quitButtonEnteredImage = new ImageIcon(Main.class.getResource("../../images/startButtonBasic.png"));
+    private ImageIcon startButtonBasicImage = new ImageIcon(Main.class.getResource("../../images/startButtonBasic2.png"));
+    private ImageIcon startButtonEnteredImage = new ImageIcon(Main.class.getResource("../../images/startButtonEntered.png"));
+    private ImageIcon quitButtonBasicImage = new ImageIcon(Main.class.getResource("../../images/quitButtonBasic.png"));
+    private ImageIcon quitButtonEnteredImage = new ImageIcon(Main.class.getResource("../../images/quitButtonBasic.png"));
 
     private JButton exitButton = new JButton(exitButtonBasicImage);
     private JButton startButton = new JButton(startButtonBasicImage);
