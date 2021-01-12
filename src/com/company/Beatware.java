@@ -24,7 +24,6 @@ public class Beatware extends JFrame {
     private ImageIcon leftButtonEnteredImage = new ImageIcon(Main.class.getResource("../../images/leftButtonEntered2.png"));
     private ImageIcon rightButtonBasicImage = new ImageIcon(Main.class.getResource("../../images/rightButtonBasic2.png"));
     private ImageIcon rightButtonEnteredImage = new ImageIcon(Main.class.getResource("../../images/rightButtonEntered2.png"));
-
     private ImageIcon easyButtonBasicImage = new ImageIcon(Main.class.getResource("../../images/easyButtonBasic2.png"));
     private ImageIcon easyButtonEnteredImage = new ImageIcon(Main.class.getResource("../../images/easyButtonEntered2.png"));
     private ImageIcon hardButtonBasicImage = new ImageIcon(Main.class.getResource("../../images/hardButtonBasic2.png"));
@@ -46,15 +45,17 @@ public class Beatware extends JFrame {
     Music buttonEnteredMusic = new Music("buttonEnteredMusic2.mp3", false);
 
     private boolean isMainScreen = false;
+    private boolean isGameScreen = false;
+    private boolean isHard = false;
 
-    ArrayList<Track> trackList = new ArrayList<Track>();
+    public static ArrayList<Track> trackList = new ArrayList<Track>();
 
     private Image titleImage;
     private Image selectedImage;
     private Music selectedMusic;
     private Music introMusic = new Music("introMusic2.mp3", true);
     private int nowSelected = 0;
-
+    public static Game game;
 
     public Beatware(){
         setUndecorated(true);
@@ -66,15 +67,16 @@ public class Beatware extends JFrame {
         setVisible(true);
         setBackground(new Color(0,0,0,0));
         setLayout(null);
+        addKeyListener(new KeyListener());
 
         introMusic.start();
 
         trackList.add(new Track("Ed Sheeran - Shape Of You title.png","Ed Sheeran - Shape Of You 600x450.jpg", "Ed Sheeran - Shape Of You 1280x720.jpg",
-                "Ed Sheeran - Shape Of You sample.mp3", "Ed Sheeran - Shape Of You.mp3"));
+                "Ed Sheeran - Shape Of You sample.mp3", "Ed Sheeran - Shape Of You.mp3", "Ed Sheeran - Shape Of You"));
         trackList.add(new Track("Imagine Dragons - Believer title.png","Imagine Dragons - Believer 600x450.jpg", "Imagine Dragons - Believer 1280x720.jpg",
-                "Imagine Dragons - Believer sample.mp3", "Imagine Dragons - Believer .mp3"));
+                "Imagine Dragons - Believer sample.mp3", "Imagine Dragons - Believer.mp3", "Imagine Dragons - Believer"));
         trackList.add(new Track("Imagine Dragons - Natural title.png","Imagine Dragons - Natural 600x450.jpg", "Imagine Dragons - Natural 1280x720.jpg",
-                "Imagine Dragons - Natural sample.mp3", "Imagine Dragons - Natural.mp3"));
+                "Imagine Dragons - Natural sample.mp3", "Imagine Dragons - Natural.mp3", "Imagine Dragons - Natural"));
 
         // exit 버튼
         exitButton.setBounds(1245,0,30,30);
@@ -111,6 +113,7 @@ public class Beatware extends JFrame {
             public void mouseEntered(MouseEvent e){
                 startButton.setIcon(startButtonEnteredImage);
                 startButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
+                Music buttonEnteredMusic = new Music("buttonEnteredMusic2.mp3", false);
                 buttonEnteredMusic.start();
             }
             @Override
@@ -228,8 +231,8 @@ public class Beatware extends JFrame {
             }
             @Override
             public void mousePressed(MouseEvent e) {
-
-                gameStart(nowSelected,false);
+                isHard = false;
+                gameStart(nowSelected);
 
             }
         });
@@ -256,7 +259,8 @@ public class Beatware extends JFrame {
             }
             @Override
             public void mousePressed(MouseEvent e) {
-                gameStart(nowSelected,true);
+                isHard = true;
+                gameStart(nowSelected);
 
             }
         });
@@ -316,10 +320,10 @@ public class Beatware extends JFrame {
     public void paint(Graphics g) {
         screenImage = createImage(Main.SCREEN_WIDTH, Main.SCREEN_HEIGHT);
         screenGraphic = screenImage.getGraphics();
-        screenDraw(screenGraphic);
+        screenDraw((Graphics2D)screenGraphic);
         g.drawImage(screenImage, 0, 0, null);
     }
-    public void screenDraw(Graphics g){
+    public void screenDraw(Graphics2D g){
         g.drawImage(background, 0, 0, null);
         paintComponents(g);
 
@@ -327,6 +331,11 @@ public class Beatware extends JFrame {
         {
             g.drawImage(selectedImage,340,100,null);
             g.drawImage(titleImage, 340, 70, null);
+        }
+        if(isGameScreen)
+        {
+            String gameName = trackList.get(nowSelected).getGameMusic();
+            game.screenDraw(g,gameName,isHard);
         }
 
         this.repaint();
@@ -360,7 +369,7 @@ public class Beatware extends JFrame {
         selectTrack(nowSelected);
     }
 
-    public void gameStart(int nowSelected, boolean ishard)
+    public void gameStart(int nowSelected)
     {
         if(selectedMusic!=null)
             selectedMusic.close();
@@ -371,11 +380,14 @@ public class Beatware extends JFrame {
         hardButton.setVisible(false);
         backButton.setVisible(true);
         background = new ImageIcon(Main.class.getResource("../../images/"+trackList.get(nowSelected).getGameImage())).getImage();
-
+        isGameScreen=true;
+        setFocusable(true);
+        game = new Game(trackList.get(nowSelected).getTitleName(),isHard, trackList.get(nowSelected).getGameMusic());
     }
 
     public void backMain() {
         isMainScreen = true;
+        isGameScreen = false;
         leftButton.setVisible(true);
         rightButton.setVisible(true);
         easyButton.setVisible(true);
@@ -383,6 +395,9 @@ public class Beatware extends JFrame {
         backButton.setVisible(false);
         background = new ImageIcon(Main.class.getResource("../../images/mainBackground2.jpg")).getImage();
         selectTrack(nowSelected);
+        game.close();
+        setFocusable(true);
+        requestFocus();
     }
     public void enterMain(){
         startButton.setVisible(false);
@@ -395,5 +410,7 @@ public class Beatware extends JFrame {
         isMainScreen = true;
         introMusic.close();
         selectTrack(0);
+        setFocusable(true);
+        requestFocus();
     }
 }
