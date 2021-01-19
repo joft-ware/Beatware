@@ -6,7 +6,6 @@ import java.util.ArrayList;
 
 public class Game extends Thread{
 
-    private Image noteBasicImage = new ImageIcon(Main.class.getResource("../../images/noteBasic2.png")).getImage();
     private Image noteRouteLineImage = new ImageIcon(Main.class.getResource("../../images/noteRouteLine2.png")).getImage();
     private Image judgementLineImage = new ImageIcon(Main.class.getResource("../../images/judgementLine2.png")).getImage();
     private Image gameInfoImage = new ImageIcon(Main.class.getResource("../../images/gameInfo2.png")).getImage();
@@ -34,6 +33,7 @@ public class Game extends Thread{
         this.musicTitle = musicTitle;
         gameMusic = new Music(this.musicTitle, false);
         gameMusic.start();
+        dropNotes(titleName);
     }
 
 
@@ -55,8 +55,15 @@ public class Game extends Thread{
         g.drawImage(noteRouteLineImage,844,30,null);
         g.drawImage(noteRouteLineImage,948,30,null);
         g.drawImage(noteRouteLineImage,1052,30,null);
+
         g.drawImage(gameInfoImage,0,660,null);
         g.drawImage(judgementLineImage,0,580,null);
+
+        for(int i=0; i<noteList.size() ; i++)
+        {
+            Note note = noteList.get(i);
+            note.screenDraw(g);
+        }
 
         g.setColor(Color.white);
         g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
@@ -163,6 +170,9 @@ public class Game extends Thread{
 
     public void dropNotes(String titleName)
     {
+        Note note = new Note(228,"short");
+        note.start();
+        noteList.add(note);
 
     }
 
