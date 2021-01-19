@@ -58,6 +58,13 @@ public class Beatware extends JFrame {
     public static Game game;
 
     public Beatware(){
+        trackList.add(new Track("Ed Sheeran - Shape Of You title.png","Ed Sheeran - Shape Of You 600x450.jpg", "Ed Sheeran - Shape Of You 1280x720.jpg",
+                "Ed Sheeran - Shape Of You sample.mp3", "Ed Sheeran - Shape Of You.mp3", "Ed Sheeran - Shape Of You"));
+        trackList.add(new Track("Imagine Dragons - Believer title.png","Imagine Dragons - Believer 600x450.jpg", "Imagine Dragons - Believer 1280x720.jpg",
+                "Imagine Dragons - Believer sample.mp3", "Imagine Dragons - Believer.mp3", "Imagine Dragons - Believer"));
+        trackList.add(new Track("Imagine Dragons - Natural title.png","Imagine Dragons - Natural 600x450.jpg", "Imagine Dragons - Natural 1280x720.jpg",
+                "Imagine Dragons - Natural sample.mp3", "Imagine Dragons - Natural.mp3", "Imagine Dragons - Natural"));
+
         setUndecorated(true);
         setTitle("Beatware");
         setSize(Main.SCREEN_WIDTH, Main.SCREEN_HEIGHT);
@@ -70,13 +77,6 @@ public class Beatware extends JFrame {
         addKeyListener(new KeyListener());
 
         introMusic.start();
-
-        trackList.add(new Track("Ed Sheeran - Shape Of You title.png","Ed Sheeran - Shape Of You 600x450.jpg", "Ed Sheeran - Shape Of You 1280x720.jpg",
-                "Ed Sheeran - Shape Of You sample.mp3", "Ed Sheeran - Shape Of You.mp3", "Ed Sheeran - Shape Of You"));
-        trackList.add(new Track("Imagine Dragons - Believer title.png","Imagine Dragons - Believer 600x450.jpg", "Imagine Dragons - Believer 1280x720.jpg",
-                "Imagine Dragons - Believer sample.mp3", "Imagine Dragons - Believer.mp3", "Imagine Dragons - Believer"));
-        trackList.add(new Track("Imagine Dragons - Natural title.png","Imagine Dragons - Natural 600x450.jpg", "Imagine Dragons - Natural 1280x720.jpg",
-                "Imagine Dragons - Natural sample.mp3", "Imagine Dragons - Natural.mp3", "Imagine Dragons - Natural"));
 
         // exit 버튼
         exitButton.setBounds(1245,0,30,30);
@@ -337,6 +337,12 @@ public class Beatware extends JFrame {
             String gameName = trackList.get(nowSelected).getGameMusic();
             game.screenDraw(g,gameName,isHard);
         }
+        paintComponents(g);
+        try {
+            Thread.sleep(5);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         this.repaint();
     }
@@ -381,8 +387,9 @@ public class Beatware extends JFrame {
         backButton.setVisible(true);
         background = new ImageIcon(Main.class.getResource("../../images/"+trackList.get(nowSelected).getGameImage())).getImage();
         isGameScreen=true;
-        setFocusable(true);
         game = new Game(trackList.get(nowSelected).getTitleName(),isHard, trackList.get(nowSelected).getGameMusic());
+        game.start();
+        setFocusable(true);
     }
 
     public void backMain() {
