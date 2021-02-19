@@ -31,7 +31,6 @@ public class Game extends Thread{
 
 
     private String titleName;
-    private boolean isHard;
     private String musicTitle;
     public Music gameMusic;
     ArrayList<Note> noteList = new ArrayList<Note>();
@@ -39,7 +38,6 @@ public class Game extends Thread{
     public Game(String titleName, boolean isHard, String musicTitle)
     {
         this.titleName=titleName;
-        this.isHard = isHard;
         this.musicTitle = musicTitle;
         gameMusic = new Music(this.musicTitle, false);
     }
